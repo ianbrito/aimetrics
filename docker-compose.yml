@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres
+    container_name: iametrics-db
+    ports:
+      - 5430:5432
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    
