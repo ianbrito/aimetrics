@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from datetime import datetime
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -28,22 +29,21 @@ class Experiment:
             X, y, test_size=test_size, random_state=42
         )
         self.pipeline.fit(X_train, y_train)
-
         y_pred = self.pipeline.predict(X_test)
 
-        # Escolher métricas de acordo com o tipo de problema
-        if len(set(y)) < 10:  # Classificação
+        # Detectar se é classificação ou regressão
+        if pd.api.types.is_numeric_dtype(y):  # Regressão
+            metrics = {
+                "mse": mean_squared_error(y_test, y_pred),
+                "rmse": np.sqrt(mean_squared_error(y_test, y_pred)),
+                "r2_score": r2_score(y_test, y_pred),
+            }
+        else:  # Classificação
             metrics = {
                 "accuracy": accuracy_score(y_test, y_pred),
                 "precision": precision_score(y_test, y_pred, average="weighted"),
                 "recall": recall_score(y_test, y_pred, average="weighted"),
                 "f1_score": f1_score(y_test, y_pred, average="weighted"),
-            }
-        else:  # Regressão
-            metrics = {
-                "mse": mean_squared_error(y_test, y_pred),
-                "rmse": np.sqrt(mean_squared_error(y_test, y_pred)),
-                "r2_score": r2_score(y_test, y_pred),
             }
 
         self.results = {
@@ -56,7 +56,7 @@ class Experiment:
         }
 
         return self.results
-    
+
     def cross_validate(self, X, y, cv=5):
         """Executa validação cruzada e retorna os scores."""
         scores = cross_val_score(self.pipeline, X, y, cv=cv)
