@@ -1,7 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.datasets import load_iris
 from sklearn.datasets import fetch_california_housing
-from ml.experiment import Experiment
+from experiment.experiment import Experiment
 from database.database import Database
 from sklearn.linear_model import LinearRegression, LogisticRegression
 import pandas as pd
